@@ -1,0 +1,6 @@
+geometry_msgs/Pose pose_init
+geometry_msgs/Twist twist_init
+geometry_msgs/Pose pose_goal
+geometry_msgs/Twist twist_goal
+---
+bool success

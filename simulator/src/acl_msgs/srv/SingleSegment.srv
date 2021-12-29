@@ -1,0 +1,9 @@
+acl_msgs/SimpleState s
+float64 r
+float64 v
+bool reset_state
+bool use_start_state
+int64 d
+---
+acl_msgs/SimpleState s_prime
+float64 reward

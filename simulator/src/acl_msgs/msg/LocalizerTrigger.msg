@@ -1,0 +1,3 @@
+Header header
+string class_string
+bool trigger_fov

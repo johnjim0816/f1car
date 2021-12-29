@@ -1,0 +1,6 @@
+float64 xcross
+float64 t13
+float64 t24
+int64 num_laps
+---
+float64 reward

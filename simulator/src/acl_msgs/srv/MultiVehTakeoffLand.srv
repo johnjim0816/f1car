@@ -1,0 +1,5 @@
+bool takeoff
+bool use_current_pose
+geometry_msgs/Pose[] initial_pose
+---
+bool done

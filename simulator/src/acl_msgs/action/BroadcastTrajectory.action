@@ -1,0 +1,9 @@
+#goal definition
+acl_msgs/Trajectory trajectory
+bool relative_starting_coordinates
+---
+#result definition
+bool success
+---
+#feedback
+float64 percent_complete

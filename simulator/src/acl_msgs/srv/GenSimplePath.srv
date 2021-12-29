@@ -1,0 +1,6 @@
+float64 vmax
+float64 amax
+geometry_msgs/Vector3 p0
+geometry_msgs/Vector3 p1
+---
+acl_msgs/Trajectory trajectory

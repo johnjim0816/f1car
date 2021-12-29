@@ -1,0 +1,5 @@
+float64 time
+float64 max_omega
+float64 max_turn
+---
+bool finish

@@ -1,0 +1,15 @@
+uint16 N # note: including N here is a little redundant as it can be inferred from the dimension of the input vectors.  However, it is useful for error checking.
+uint16 numD
+float64 T
+float64 h
+float64 R
+geometry_msgs/Vector3[] p0
+geometry_msgs/Vector3[] v0
+geometry_msgs/Vector3[] a0
+geometry_msgs/Vector3[] p1
+geometry_msgs/Vector3[] v1
+geometry_msgs/Vector3[] a1
+geometry_msgs/Vector3[] obstacles
+---
+acl_msgs/Trajectory[] trajectories
+bool converged

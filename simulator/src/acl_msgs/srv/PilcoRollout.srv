@@ -1,0 +1,11 @@
+acl_msgs/GPparams[] params
+int64 H
+int64 num_centers
+int64 D
+int64 E
+float64 rate
+bool random
+float64 dy0
+---
+std_msgs/Float64MultiArray x
+std_msgs/Float64MultiArray y

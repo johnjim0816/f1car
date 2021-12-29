@@ -1,0 +1,7 @@
+acl_msgs/CarState startState
+float64 dt
+float64 omegaDes
+float64 turn
+bool showVis
+---
+acl_msgs/CarState finalState

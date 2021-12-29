@@ -1,0 +1,10 @@
+int64 segment
+float64 x
+float64 y
+float64 psi
+float64 omega
+float64 Vx
+float64 Vy
+float64 psidot
+int64 slipping
+float64 prev_radius

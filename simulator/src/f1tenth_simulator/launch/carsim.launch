@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+  
+    <arg name="sim" default="true" />
+	<arg name="veh" default="RC" />
+	<arg name="num" default="01" /> <!-- orignial value is 03, Xiaoyin Changed it into 01-->
+<arg unless="$(arg sim)" name="car" value="$(arg veh)$(arg num)" />
+<arg if="$(arg sim)" name="car" value="$(arg veh)$(arg num)s" />
+	<arg name="log" default="false" />
+	<arg name="srv_mode" default="false" />
+<arg name="joy" default="false" />
+
+
+    <env name="ROS_NAMESPACE" value="$(arg car)" />
+  
+  
+    <node if="$(arg sim)" name="car_sim" pkg="car_sim" type="car_sim" output="screen" args="$(arg srv_mode)" />
+  
+  <!--launch Cutler car sim Node -->
+ 
+
+  <!-- ***Put launch command for new planner here:-->
+  <!-- Launch the New Planner Node -->
+  <!--   <node pkg="f1tenth_simulator" name="new node's name" type="new file name" output="screen">
+          <rosparam command="load" file="$(find f1tenth_simulator)/params.yaml"/>
+  	 </node>    -->  
+  	 
+</launch>
+  
+  
