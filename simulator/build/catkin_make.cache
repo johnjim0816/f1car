@@ -1,2 +1,0 @@
-acl_msgs:car_sim:f1tenth_simulator
--DCATKIN_DEVEL_PREFIX=/home/jj/Desktop/f1ten_4w1/simulator/devel -DCMAKE_INSTALL_PREFIX=/home/jj/Desktop/f1ten_4w1/simulator/install -G Unix Makefiles

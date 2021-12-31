@@ -1,8 +1,0 @@
-prefix=/home/jj/Desktop/f1ten_4w1/simulator/install
-
-Name: car_sim
-Description: Description of car_sim
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: std_msgs geometry_msgs acl_msgs
