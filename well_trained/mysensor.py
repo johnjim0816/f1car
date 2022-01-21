@@ -57,12 +57,14 @@ class Sensor():
     
     def get_yaw_error(self):  
         
-        #target_yaw = -3.14159
         
-        if self.yaw < 0:
-            return abs(-3.141- self.yaw)
-        else:
-            return abs(3.141 -  self.yaw)
+        target_yaw = -3.14159
+        return abs(target_yaw -self.yaw)
+        
+        # if self.yaw < 0:
+        #     return abs(-3.141- self.yaw)
+        # else:
+        #     return abs(3.141 -  self.yaw)
         
 
 if __name__ == '__main__':        

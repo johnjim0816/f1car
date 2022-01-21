@@ -1,5 +1,6 @@
 from mycar_control import Drive
 from mysensor import Sensor
+import sys
 
 import gym
 from gym import spaces
@@ -60,25 +61,25 @@ class CarEnv(gym.Env):
             
         #    if action == 6 and self.brake_flag:
         #        self.keep_brake_flag = True
+        # If this one can't work, just change it as
 
-
-        # Keep ACC mechanism
+        # keep ACC mechanism
         if self.sensor.get_distance_error() > 6.0:
             action = 0
         else:
             action = policy_action
-        
-        # Keep Brake mechanism
-        if self.keep_brake_flag:
-            action = 6 # right brake
-        else:
-            action = policy_action
-            
-            if action == 6 and self.sensor.get_distance_error() < 4.0:
-                self.keep_brake_flag = True        
-        # Keep acc mechanism      
-        # if self.curr_step%10==0:
-        #     print('action:',action)
+
+            # Keep brake mechanism            
+            if self.keep_brake_flag:
+                action = 6 # right brake
+            else:
+                action = policy_action
+                
+                if action == 6 and self.sensor.get_distance_error() < 4.0:
+                    self.keep_brake_flag = True        
+            # Keep acc mechanism      
+
+     
                 
         if action==0: # go straight
             throttle = 1.
@@ -129,33 +130,38 @@ class CarEnv(gym.Env):
         self.brakes.append(brake)
         
         if self.brake_flag == True:
-            reward = throttle * (-200.0)  + brake * 5.0- self.sensor.get_distance_error() * 1.0- self.sensor.get_yaw_error() * 3.0 - math.sqrt( ( self.sensor.vx) **2 + (self.sensor.vy) **2 ) * 1.0# pnealty for T, reward for right steer, breward for brake
-            # I enlarger the barke ratio, error ratio, all to size greater than 1
+            # Check whether over 180 a little or not. 
+            if abs(3.1415 - self.sensor.yaw) >  0.2:
+                reward = ( throttle * (-20.0)  + brake * 5.0- self.sensor.get_distance_error() * 1.5- self.sensor.get_yaw_error() * 3.0 - math.sqrt( ( self.sensor.vx) **2 + (self.sensor.vy) **2 ) * 1.0  ) * 3.0# pnealty for T, reward for right steer, breward for brake
+                # I enlarger the barke ratio, error ratio, all to size greater than 1
+            else: # close to 180 deg
+                reward = ( throttle * (-20.0)  + brake * 5.0- self.sensor.get_distance_error() * 1.5- min( abs(-3.141- self.sensor.yaw), abs(3.141 -  self.sensor.yaw) ) * 3.0 - math.sqrt( ( self.sensor.vx) **2 + (self.sensor.vy) **2 ) * 1.0   ) * 3.0
+                
         else:
             if self.sensor.get_distance_error() > 5.8: # Go straight, ACC!!!
              
                 if self.sensor.y >4.0: #With go-left penalty
-                    reward = throttle*1.0-abs(steer)*200.0-brake*200.0 - (self.sensor.y-4.0) *500.0 + self.sensor.vx * 19.0 - abs(self.sensor.yaw) * 30.0 - self.sensor.get_distance_error()*50.0 # give penalty for go left; reward for vx, penalty for abs(yaw _angle).
+                    reward =  ( throttle*1.0-abs(steer)*200.0-brake*200.0 - (self.sensor.y-4.0) *500.0 + self.sensor.vx * 19.0 - abs(self.sensor.yaw) * 30.0 - self.sensor.get_distance_error()*50.0  ) * 0.1# give penalty for go left; reward for vx, penalty for abs(yaw _angle).
                 else: # No go-left penalty
-                    reward = throttle*1.0-abs(steer)*200.0-brake*200.0  + self.sensor.vx * 19.0 - abs(self.sensor.yaw) * 30.0 - self.sensor.get_distance_error()*80.0
+                    reward = ( throttle*1.0-abs(steer)*200.0-brake*200.0  + self.sensor.vx * 19.0 - abs(self.sensor.yaw) * 30.0 - self.sensor.get_distance_error()*80.0 ) * 0.1
             
             else:
 
                 if self._get_yaw_diff()>0.03: # diff large, not zero, steer
 
                     if steer == 0:
-                        reward = throttle* 0.2- 200.0 - brake*80.0 -self.sensor.get_distance_error() * 10.0 - self.sensor.get_yaw_error() * 80.0 +  self.sensor.vy * 0.8 + self.sensor.beta * 3.0 - (self.sensor.y-4.0) *80.0
+                        reward = throttle* 0.2- 200.0 - brake*80.0 -self.sensor.get_distance_error() * 15.0 - self.sensor.get_yaw_error() * 80.0 +  self.sensor.vy * 0.8 + self.sensor.beta * 3.0 - (self.sensor.y-4.0) *80.0
                     else:
-                        reward = throttle * 0.2   - brake*80.0 -self.sensor.get_distance_error() * 10.0 - self.sensor.get_yaw_error() * 80.0 +  self.sensor.vy * 0.8 + self.sensor.beta * 3.0  -(self.sensor.y-4.0) *80.0
+                        reward = throttle * 0.2   - brake*80.0 -self.sensor.get_distance_error() * 15.0 - self.sensor.get_yaw_error() * 80.0 +  self.sensor.vy * 0.8 + self.sensor.beta * 3.0  -(self.sensor.y-4.0) *80.0
                 else: # yaw diff close to zero, begin to set brake flag to
                     self.brake_flag = True
-                    reward = throttle * (-200.0)   + brake * 5.0  -self.sensor.get_distance_error() * 1.0- self.sensor.get_yaw_error() * 3.0 - math.sqrt( ( self.sensor.vx) **2 + (self.sensor.vy) **2 ) * 1.0 
+                    reward = throttle * (-200.0)   + brake * 5.0  -self.sensor.get_distance_error() * 1.5- self.sensor.get_yaw_error() * 3.0 - math.sqrt( ( self.sensor.vx) **2 + (self.sensor.vy) **2 ) * 1.0 
         # Offside Penalty
         
         if self.sensor.x<-4.99 or self.sensor.x>6.99:
-            reward -=80.0
+            reward -= 80.0
         if self.sensor.y<0.01 :
-            reward -=80.0
+            reward -= 80.0
         if self.target_y>6.99:  # more penalty for left offside
             reward -= 100.0  
 
@@ -163,7 +169,12 @@ class CarEnv(gym.Env):
         done =  self._check_done()  
          
         if self.curr_step%10==0:
-            print(f"action:{action},reward:{int(reward)},brake_flag:{self.brake_flag},_yaw_diff():{self._get_yaw_diff()}, yaw_error:{self.sensor.get_yaw_error()}, distance:{self.sensor.get_distance_error()}, velo:{math.sqrt( ( self.sensor.vx) **2 + (self.sensor.vy) **2 )}")
+            if abs(3.1415 - self.sensor.yaw) >  0.18:
+                print(f"action:{action},reward:{'%.3f'%reward},brake_flag:{self.brake_flag},keepbrake_flag:{self.keep_brake_flag},yaw_diff:{'%.3f'%self._get_yaw_diff()}, yaw_error:{'%.3f'%self.sensor.get_yaw_error()}, distance:{'%.3f'%self.sensor.get_distance_error()}")
+            else:
+                print(f"action:{action},reward:{'%.3f'%reward},brake_flag:{self.brake_flag},keepbrake_flag:{self.keep_brake_flag},yaw_diff:{'%.3f'%self._get_yaw_diff()}, yaw_error:{'%.3f'%min( abs(-3.141- self.sensor.yaw), abs(3.141 -  self.sensor.yaw) )}, distance:{'%.3f'%self.sensor.get_distance_error()}")
+                    
+            
             #print(f"velocity_theta:{velocity_theta},postion_theta:{postion_theta}")            
         if self.curr_step>=150:
             self.curr_step = 0

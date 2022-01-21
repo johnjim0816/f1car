@@ -20,7 +20,7 @@ except ImportError:
 from std_msgs.msg import String
 
 from scipy.integrate import odeint
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import title, legend
 import math

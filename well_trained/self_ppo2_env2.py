@@ -10,7 +10,11 @@ import numpy as np
 import gym
 from algos.ppo2 import PPO
 from utils.utils import make_dir
-from gym_env_2ps2 import CarEnv # Currently running 
+#from gym_env_2ps2 import CarEnv 
+#from gym_env_2ps2p import CarEnv
+from gym_env_3 import CarEnv # Currently running
+
+
 #from trpo_env2p import CarEnv 
 curr_time = datetime.now().strftime("%Y%m%d-%H%M%S")  # 获取当前时间
 class Config:
@@ -21,8 +25,8 @@ class Config:
         self.env_name = 'env2' # 环境名称
         self.algo_name = 'self_ppo2'
         self.continuous_action = False # 是否为连续动作空间
-        self.max_ep_len = 150 # 每回合的最大步数
-        self.max_training_timesteps = int(1e5) # 最大训练步数
+        self.max_ep_len = 150 # 每回合的最大步数, max step of each episode
+        self.max_training_timesteps = int(8e5) # 最大训练步数, 1 million
         self.print_freq = self.max_ep_len*4 # 打印频率
         self.log_freq = self.max_ep_len*2 #日志频率
         self.save_model_freq = int(2e4) # 保存模型的频率
@@ -34,7 +38,7 @@ class Config:
         self.update_timestep = self.max_ep_len * 4 # 策略更新频率 1~10
         self.k_epochs = 40 # 20~200
         self.eps_clip = 0.2   # clip参数,0~0.5
-        self.gamma = 0.99 # 折扣因子
+        self.gamma = 0.8 #0.99 # 折扣因子
         self.actor_lr = 0.0003 # actor网络的学习率
         self.critic_lr = 0.001 # critic网络的学习率
         ################################################################################
@@ -61,6 +65,12 @@ def env_agent_config(cfg):
         env.seed(cfg.seed)
         np.random.seed(cfg.seed)
     agent = PPO(state_dim, action_dim, cfg)
+    
+    #added by Sakura
+    #agent.load("/media/crl/DATA/Desktop/f1car/well_trained/outputs/self_ppo2/env2/20220101-133018/models/PPO_seed1.pth")
+
+    # path of well trained model, absolluth path + file name; 
+    #load the previous model, and train, base on previous one  
     return env,agent
 
 def train(cfg,env,agent):
